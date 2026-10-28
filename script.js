@@ -1,7 +1,7 @@
 /* ===== EDIT ME: your name, links and projects ===== */
 const SITE={name:"ArctxFox",github:"https://github.com/arctxfox",email:"arctxfox@gmail.com"};
 const PROJECTS=[
- {cat:"web",name:"Aurora Notes",desc:"A tiny note-taking app that lives in your browser.",tags:["HTML","JS"],url:"#"},
+ {cat:"web",name:"AuroraNotes",desc:"A tiny note-taking app that lives in your browser.",tags:["HTML","JS"],url:"https://arctxfox.github.io/aurora-notes/"},
  {cat:"web",name:"Snowdrift Weather",desc:"Weather dashboard with animated icons.",tags:["JS","API"],url:"#"},
 {cat:"tools",name:"Color Wheel Picker",desc:"Pick any colour from a wheel and copy its HEX and RGB.",tags:["Canvas","JS"],url:"colorpicker.html"},
  {cat:"tools",name:"Den Converter",desc:"Unit and colour converter for quick dev work.",tags:["JS","CSS"],url:"#"},
