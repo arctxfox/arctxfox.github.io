@@ -1,0 +1,7 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Contact | ArctxFox</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;800&display=swap"><link rel="stylesheet" href="style.css"></head>
+<body><main>
+<h1 class="page">Contact</h1><div class="win"><div class="title">New message<i><b></b><b></b></i></div><div class="body"><p>Fastest way: open an issue or email me. This form opens your mail app.</p>
+<form onsubmit="event.preventDefault();location.href=`mailto:${SITE.email}?subject=${encodeURIComponent(s.value)}&body=${encodeURIComponent(m.value)}`"><label for="s">Subject</label><input id="s" required><label for="m">Message</label><textarea id="m" rows="5" required></textarea><p><button class="btn">Send email</button></p></form></div></div>
+</main><script src="script.js"></script></body></html>

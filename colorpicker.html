@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Color picker | ArctxFox</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;800&display=swap"><link rel="stylesheet" href="style.css">
+<style>
+.cp{display:grid;grid-template-columns:auto 1fr;gap:1.5rem;align-items:start}
+#wheel{width:min(300px,100%);aspect-ratio:1;border-radius:50%;cursor:crosshair;touch-action:none;display:block;box-shadow:0 0 0 3px #fff,0 0 0 4px var(--sea),0 8px 20px rgba(10,61,107,.35)}
+#wheel:focus-visible{outline:3px solid var(--fox);outline-offset:4px}
+.sw{height:90px;border:2px solid;border-color:#404a55 #fff #fff #404a55;margin-bottom:.8rem;transition:background .1s}
+.row{display:flex;gap:.5rem;margin:.4rem 0}.row input{flex:1}
+.row button{font:700 .85rem var(--ui);padding:.3rem .8rem;background:#dfe7ee;border:2px solid;border-color:#fff #404a55 #404a55 #fff;cursor:pointer}
+.row button:active{border-color:#404a55 #fff #fff #404a55}
+input[type=range]{padding:0;border:0;background:none;accent-color:var(--sea)}
+@media(max-width:640px){.cp{grid-template-columns:1fr;justify-items:center}.cp>div{width:100%}}
+</style></head>
+<body><main>
+<h1 class="page">Color picker</h1>
+<p class="lead">Click or drag on the wheel to choose a colour. Use the slider to make it lighter or darker.</p>
+<div class="win"><div class="title">Colors.exe<i><b></b><b></b></i></div><div class="body"><div class="cp">
+<canvas id="wheel" width="300" height="300" tabindex="0" role="slider" aria-label="Color wheel. Arrow keys change hue and saturation."></canvas>
+<div>
+<div class="sw" id="sw"></div>
+<label for="br">Brightness</label><input type="range" id="br" min="0" max="100" value="100">
+<label for="hex">HEX</label><div class="row"><input id="hex" readonly><button data-c="hex">Copy</button></div>
+<label for="rgb">RGB</label><div class="row"><input id="rgb" readonly><button data-c="rgb">Copy</button></div>
+<p id="msg" role="status" style="font:.85rem var(--ui);min-height:1.3em"></p>
+</div></div></div></div>
+</main><script src="script.js"></script>
+<script>(()=>{
+const $=id=>document.getElementById(id),sw=$("sw"),hex=$("hex"),rgb=$("rgb"),br=$("br"),msg=$("msg");
+const cv=document.getElementById("wheel"),g=cv.getContext("2d"),R=150;
+let H=24,S=.9,V=1;
+function hsv(h,s,v){const f=n=>{const k=(n+h/60)%6;return v-v*s*Math.max(0,Math.min(k,4-k,1))};return[f(5),f(3),f(1)].map(x=>Math.round(x*255))}
+function draw(){const im=g.createImageData(300,300);
+ for(let y=0;y<300;y++)for(let x=0;x<300;x++){const dx=x-R,dy=y-R,d=Math.hypot(dx,dy),i=(y*300+x)*4;
+  if(d<=R){const h=(Math.atan2(dy,dx)*180/Math.PI+360)%360,c=hsv(h,d/R,V);im.data.set([...c,d>R-1?150:255],i)}}
+ g.putImageData(im,0,0);
+ const a=H*Math.PI/180,mx=R+Math.cos(a)*S*R,my=R+Math.sin(a)*S*R;
+ g.lineWidth=3;g.strokeStyle="#fff";g.beginPath();g.arc(mx,my,9,0,7);g.stroke();
+ g.lineWidth=1.5;g.strokeStyle="#0a3d6b";g.beginPath();g.arc(mx,my,11,0,7);g.stroke();
+ const [r,gr,b]=hsv(H,S,V),hx="#"+[r,gr,b].map(n=>n.toString(16).padStart(2,"0")).join("").toUpperCase();
+ sw.style.background=hx;hex.value=hx;rgb.value=`rgb(${r}, ${gr}, ${b})`}
+function pick(e){const r=cv.getBoundingClientRect(),k=300/r.width,x=(e.clientX-r.left)*k-R,y=(e.clientY-r.top)*k-R;
+ H=(Math.atan2(y,x)*180/Math.PI+360)%360;S=Math.min(1,Math.hypot(x,y)/R);draw()}
+let down=false;
+cv.onpointerdown=e=>{down=true;cv.setPointerCapture(e.pointerId);pick(e)};
+cv.onpointermove=e=>down&&pick(e);cv.onpointerup=()=>down=false;
+cv.onkeydown=e=>{const k={ArrowLeft:[-5,0],ArrowRight:[5,0],ArrowUp:[0,.04],ArrowDown:[0,-.04]}[e.key];
+ if(k){e.preventDefault();H=(H+k[0]+360)%360;S=Math.max(0,Math.min(1,S+k[1]));draw()}};
+br.oninput=()=>{V=br.value/100;draw()};
+document.querySelectorAll("[data-c]").forEach(b=>b.onclick=async()=>{const t=document.getElementById(b.dataset.c).value;
+ try{await navigator.clipboard.writeText(t);msg.textContent="Copied "+t}catch{document.getElementById(b.dataset.c).select();msg.textContent="Press Ctrl+C to copy"}});
+draw();
+})();
+</script></body></html>
